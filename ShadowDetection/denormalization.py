@@ -1,6 +1,24 @@
 import numpy as np
 import pandas as pd
+import cv2
+import os
+from basic_functions import resize_image,join_images_horizontally
 
+
+def join_images(images):
+    if len(images) != 6:
+        raise ValueError("Input array must contain exactly 6 images.")
+    
+    # Join the first 3 images horizontally
+    first_horizontal = np.hstack(images[:3])
+    
+    # Join the last 3 images horizontally
+    second_horizontal = np.hstack(images[3:])
+    
+    # Join the two resulting images vertically
+    final_image = np.vstack([first_horizontal, second_horizontal])
+    
+    return final_image
 
 def denormalized_image_coordinates(
     norm_coords: np.ndarray, width: int, height: int
@@ -23,8 +41,40 @@ def readtracks(trackpath):
     df['y'] = xypoints[:,1]
     return df
 
+# path = 'Dataset/Reconstructions/'
+# subsections = []
+# for i in range(0,10):
+#     subsections.append(f'{path}subsection00{i}/')
+# for i in range(10,100):
+#     subsections.append(f'{path}subsection0{i}/')
+# for i in range(100,116):
+#     subsections.append(f'{path}subsection{i}/')
 
-# df = readtracks(pathToTracks)
+# for x,subsection in enumerate(subsections):
+#     images_dir = subsection+'images/'    
+#     df = readtracks(subsection)
+    
+#     images = []
+#     files = [f for f in os.listdir(images_dir) if os.path.isfile(os.path.join(images_dir, f))]
+#     for file in files:        
+#         points = df[df['image'] == file][['x','y']].values
+#         image = cv2.imread(images_dir+file)
+#         for i in points:
+#             cv2.circle(image,(int(i[0]),int(i[1])),5,(255,255,255),5)
+#         images.append(resize_image(image))
+#     if len(images)>0:
+#         cv2.imwrite(f"Results/{x}.png",join_images(images))
+#     else:
+#         print(f"{len(files)}+{len(images)}")
+            
+        
 
-#     #logIt(df)
-#     track_id1 = df[df['image'] == img1]['track_id'].values
+df = readtracks('section/')
+
+# print(df.columns)
+
+points = df[["x",'y']]
+
+
+# print(points)
+
