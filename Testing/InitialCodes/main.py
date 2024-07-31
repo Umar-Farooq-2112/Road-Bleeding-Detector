@@ -1,6 +1,6 @@
 import cv2
 import numpy as np 
-from basic_functions import binary_mask,filter_color,resize_image,join_images_horizontally,apply_threshold,get_largest_contour
+from basic_functions import binary_mask,filter_color,resize_image,join_images_horizontally,apply_threshold
 from skimage import measure
 
 

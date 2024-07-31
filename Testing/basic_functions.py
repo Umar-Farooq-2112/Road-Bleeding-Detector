@@ -33,11 +33,18 @@ def resize_image(image, scale_percent=20):
     height = int(image.shape[0] * scale_percent / 100)
     return cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)    
 
-def get_largest_contour(mask):
+def get_largest_contours(mask):
     res = np.zeros_like(mask)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    largest_contour = max(contours, key=cv2.contourArea)
-    cv2.drawContours(res, [largest_contour], -1, (255), thickness=cv2.FILLED)
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)
+    largest_contour = contours[0]
+    cv2.drawContours(res, [largest_contour], -1, (255), thickness=cv2.FILLED)    
+    for i in range(1,len(contours)):
+        if cv2.contourArea(largest_contour)/(2)<cv2.contourArea(contours[i]):
+            largest_contour = contours[i]
+        else:
+            break
+        cv2.drawContours(res, [largest_contour], -1, (255), thickness=cv2.FILLED)    
     return res
 
 def filter_color(image,color):
